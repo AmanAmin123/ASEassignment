@@ -67,3 +67,13 @@ namespace ShapesApp
 
             }
         }
+
+      
+        public bool IsValidCommand(string command)
+        {
+            var parts = command.Split(' ');
+
+            // check if the command has at least one part
+            if (parts.Length == 0) return false;
+
+            var action = parts[0].ToLower();
