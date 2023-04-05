@@ -68,7 +68,7 @@ namespace ShapesApp
             }
         }
 
-      
+        
         public bool IsValidCommand(string command)
         {
             var parts = command.Split(' ');
@@ -77,3 +77,39 @@ namespace ShapesApp
             if (parts.Length == 0) return false;
 
             var action = parts[0].ToLower();
+
+            // switch statement to validate different command types
+            switch (action)
+            {
+                // validate format of moveto and drawto commands
+                case "moveto":
+                case "drawto":
+                    if (parts.Length != 3) return false;
+                    if (!int.TryParse(parts[1], out int x) || !int.TryParse(parts[2], out int y)) return false;
+                    break;
+
+                // validate format of rectangle command
+                case "rectangle":
+                    if (parts.Length != 3) return false;
+                    if (!int.TryParse(parts[1], out int width) || !int.TryParse(parts[2], out int height)) return false;
+                    break;
+
+                // validate format of circle command
+                case "circle":
+                    if (parts.Length != 2) return false;
+                    if (!int.TryParse(parts[1], out int radius)) return false;
+                    break;
+
+                // validate format of clear and reset commands
+                case "clear":
+                case "reset":
+                    if (parts.Length != 1) return false;
+                    break;
+
+                // invalid command type
+                default:
+                    return false;
+            }
+
+            return true;
+        }
