@@ -113,3 +113,47 @@ namespace ShapesApp
 
             return true;
         }
+        // method to draw a line from current position to a given position
+        private void DrawTo(int x, int y)
+        {
+            graphics.DrawLine(Pens.Black, currentPosition, new Point(x, y));
+            currentPosition = new Point(x, y);
+        }
+        // method to move pen to a given position
+        private void MoveTo(int x, int y)
+        {
+            currentPosition = new Point(x, y);
+        }
+
+        // method to draw a line from current position to a given position
+
+        private void Clear()
+        {
+            // Clear the graphics context with a white color
+            graphics.Clear(Color.White);
+
+            // Reset the current position
+            Reset();
+        }
+
+        private void Reset()
+        {
+            // Set the current position to the initial position
+            currentPosition = initialPosition;
+        }
+
+        private void DrawRectangle(int width, int height)
+        {
+            // Draw a rectangle with the given width and height, starting from the current position
+            graphics.DrawRectangle(Pens.Black, currentPosition.X, currentPosition.Y, width, height);
+        }
+
+        private void DrawCircle(int radius)
+        {
+            // Draw an ellipse with the given radius, centered at the current position
+            graphics.DrawEllipse(Pens.Black, currentPosition.X - radius, currentPosition.Y - radius, radius * 2, radius * 2);
+        }
+
+    }
+
+}
