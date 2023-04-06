@@ -25,3 +25,39 @@ namespace UnitTestProject1
             // Assert
             Assert.IsTrue(result);
         }
+        [TestMethod]
+        public void IsValidCommand_InvalidRectangleCommand_ReturnsFalse()
+        {
+
+            // Arrange
+
+            var graphics = Graphics.FromImage(new Bitmap(640, 480)); // Create a Graphics object
+            var initialPosition = new Point(0, 0); // Create a Point object
+            var parser = new CommandParser(graphics, initialPosition);
+            var command = "rectangle abc 123";
+          
+
+            // Act
+            var result = parser.IsValidCommand(command);
+
+            // Assert
+            Assert.IsFalse(result);
+        }
+
+        [TestMethod]
+        public void IsValidCommand_InvalidCommand_ReturnsFalse()
+        {
+            // Arrange
+
+            var graphics = Graphics.FromImage(new Bitmap(640, 480)); // Create a Graphics object
+            var initialPosition = new Point(0, 0); // Create a Point object
+            var parser = new CommandParser(graphics, initialPosition);
+            var command = "doSomething 100";
+            // Act
+            var result = parser.IsValidCommand(command);
+            // Assert
+            Assert.IsFalse(result);
+        }
+
+    }
+}
