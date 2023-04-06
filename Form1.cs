@@ -29,3 +29,20 @@ namespace ShapesApp
 
             txtCommandLine.Text = "";
         }
+
+        private void btnSyntax_Click(object sender, EventArgs e)
+        {
+            var program = txtProgram.Text;
+
+            if (!commandParser.IsValidCommand(program))
+            {
+                MessageBox.Show("Syntax error");
+            }
+        }
+
+        private void txtProgram_TextChanged(object sender, EventArgs e)
+        {
+
+        }
+    }
+}
