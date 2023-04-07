@@ -10,17 +10,23 @@ namespace ShapesApp
 {
     public class CommandParser
     {
-        // stores graphics and pen position information
         private Graphics graphics;
         private Point currentPosition;
         private Point initialPosition;
+        private List<string> commandHistory = new List<string>(); // Define commandHistory as a class-level variable
+     
 
-        // initializes graphics and pen position
+        // Factory class for creating shapes
+        private ShapeFactory shapeFactory;
+
         public CommandParser(Graphics graphics, Point initialPosition)
         {
             this.graphics = graphics;
             this.initialPosition = initialPosition;
             Reset();
+
+            // Initialize the shape factory
+            shapeFactory = new ShapeFactory();
         }
 
         public void Execute(string command)
@@ -30,37 +36,36 @@ namespace ShapesApp
                 var parts = command.Split(' ');
                 var action = parts[0].ToLower();
 
-                // switch statement to handle different command types
-                switch (action)
+               switch (action)
                 {
-                    // move pen to a given position
                     case "moveto":
                         MoveTo(int.Parse(parts[1]), int.Parse(parts[2]));
                         break;
-                    // draw a line from current position to a given position
                     case "drawto":
                         DrawTo(int.Parse(parts[1]), int.Parse(parts[2]));
                         break;
-                    // clear the drawing area and reset pen position
                     case "clear":
                         Clear();
                         break;
-                    // reset pen position to initial position
                     case "reset":
                         Reset();
                         break;
-                    // draw a rectangle at current position with given dimensions
                     case "rectangle":
-                        DrawRectangle(int.Parse(parts[1]), int.Parse(parts[2]));
+                        // Create a rectangle shape using the factory
+                        Shape rectangle = shapeFactory.CreateShape("rectangle", int.Parse(parts[1]), int.Parse(parts[2]));
+                        rectangle.Draw(graphics, currentPosition);
                         break;
-                    // draw a circle at current position with given radius
                     case "circle":
-
-                        DrawCircle(int.Parse(parts[1]));
+                        // Create a circle shape using the factory
+                        Shape circle = shapeFactory.CreateShape("circle", int.Parse(parts[1]));
+                        circle.Draw(graphics, currentPosition);
+                        break;
+                    case "loop":               
+                    case "end":
+                      
                         break;
                 }
             }
-            // catch block to handle invalid command format
             catch (Exception)
             {
                 MessageBox.Show("Not a valid command");
@@ -142,18 +147,59 @@ namespace ShapesApp
             currentPosition = initialPosition;
         }
 
-        private void DrawRectangle(int width, int height)
+        / Shape factory class
+    public class ShapeFactory
+    {
+        public Shape CreateShape(string shapeType, params int[] dimensions)
         {
-            // Draw a rectangle with the given width and height, starting from the current position
-            graphics.DrawRectangle(Pens.Black, currentPosition.X, currentPosition.Y, width, height);
+            switch (shapeType.ToLower())
+            {
+                case "rectangle":
+                    return new Rectangle(dimensions[0], dimensions[1]);
+                case "circle":
+                    return new Circle(dimensions[0]);
+                default:
+                    throw new ArgumentException($"Invalid shape type: {shapeType}");
+            }
         }
-
-        private void DrawCircle(int radius)
-        {
-            // Draw an ellipse with the given radius, centered at the current position
-            graphics.DrawEllipse(Pens.Black, currentPosition.X - radius, currentPosition.Y - radius, radius * 2, radius * 2);
-        }
-
     }
 
-}
+    // Base class for all shapes
+    public abstract class Shape
+    {
+        public abstract void Draw(Graphics graphics, Point position);
+    }
+
+    // Rectangle shape
+    public class Rectangle : Shape
+    {
+        private int width;
+        private int height;
+
+        public Rectangle(int width, int height)
+        {
+            this.width = width;
+            this.height = height;
+        }
+
+        public override void Draw(Graphics graphics, Point position)
+        {
+            graphics.DrawRectangle(Pens.Black, position.X, position.Y, width, height);
+        }
+    }
+
+    // Circle shape
+    public class Circle : Shape
+    {
+        private int radius;
+
+        public Circle(int radius)
+        {
+            this.radius = radius;
+        }
+
+        public override void Draw(Graphics graphics, Point position)
+        {
+            graphics.DrawEllipse(Pens.Black, position.X - radius, position.Y - radius, radius * 2, radius * 2);
+        }
+    }
